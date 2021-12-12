@@ -2,7 +2,7 @@
 import { tokens, EVM_REVERT } from './helpers';
 
 // Pull in Token
-const Token = artifacts.require('./token');
+const Token = artifacts.require('./Token');
 
 require('chai')
     .use(require('chai-as-promised'))
@@ -181,4 +181,4 @@ contract('Token', ([deployer, receiver, exchange]) => {
             })
         })
     })
-})
+}) 
