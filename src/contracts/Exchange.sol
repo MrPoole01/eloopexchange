@@ -13,11 +13,17 @@ contract Exchange {
 
     // Events
     event Deposit(address token, address user, uint256 amount, uint256 balance);
+    event Withdraw(address token, address user, uint amount, uint balance);
 
     // Set the Fees
     constructor (address _feeAccount, uint256 _feePercent) public {
         feeAccount = _feeAccount;
         feePercent = _feePercent;
+    }
+
+    // Fallback: Revert if Ether is sent to this smart contract by mistake 
+    function() external {
+        revert();
     }
 
     // Deposit Ether
@@ -28,8 +34,21 @@ contract Exchange {
         emit Deposit(ETHER, msg.sender, msg.value, tokens[ETHER][msg.sender]);
     }
 
+    // Withdraw Ether
+    function withdrawEther(uint _amount) public {
+        // Makes sure there is a sufficient amouunt to make the transaction
+        require(tokens[ETHER][msg.sender] >= _amount);
+        //  Update balance
+        tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].sub(_amount);
+        //  Transfer amount to sender
+        msg.sender.transfer(_amount);
+        emit Withdraw(ETHER, msg.sender, _amount, tokens[ETHER][msg.sender]);
+    }
+
+
     // Deposit Tokens
-    function depositToken(address _token, uint _amount) public { // Which Tokens
+    function depositToken(address _token, uint _amount) public { 
+        // Which Tokens
         // Don't allow Ether deposits
         require(_token != ETHER);
         // Send tokens to this contract
@@ -38,13 +57,14 @@ contract Exchange {
         tokens[_token][msg.sender] = tokens[_token][msg.sender].add(_amount);
         // Emit token event
         emit Deposit(_token, msg.sender, _amount, tokens[_token][msg.sender]);
-
-
-        // How Much 
     }
 
-// [ ] Withdraw Ether
-// [ ] Withdraw Tokens
+    // [ ] Withdraw Tokens
+    function withdrawToken(address _token, uint256 _amount) public {
+        tokens[_token][msg.sender] = tokens[_token][msg.sender].sub(_amount);
+        require(Token(_token).transfer(msg.sender, _amount));
+    }
+
 // [ ] Check Balances
 // [ ] Make Order
 // [ ] Cancel Order

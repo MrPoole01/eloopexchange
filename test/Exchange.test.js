@@ -35,6 +35,12 @@ contract('Exchange', ([deployer, feeAccount, user1]) => {
         })
     })
 
+    describe('fallack', () => {
+        it('reverts when Ether is sent', async () => {
+            await exchange.sendTransaction({ value: 1, from: user1 }).should.be.rejectedWith(EVM_REVERT)
+        })
+    })
+
     describe('depositing Ether', async () => {
         let result
         let amount
@@ -43,7 +49,56 @@ contract('Exchange', ([deployer, feeAccount, user1]) => {
             amount = ether(1)
             result = await exchange.depositEther({ from: user1, value: amount })
         })
+
+        it('tracks the ether deposit', async () => {
+            const balance = await exchange.tokens(ETHER_ADDRESS, user1)
+            balance.toString().should.equal(amount.toString())
+        })
+
+        it('emits a Deposit event', async () => {
+            const log = result.logs[0]
+            log.event.should.equal('Deposit')
+            const event = log.args
+            event.token.toString().should.equal(ETHER_ADDRESS, 'token address is correct')
+            event.user.should.equal(user1, 'user address is correct')
+            event.amount.toString().should.equal(amount.toString(), 'amount is correct')
+            event.balance.toString().should.equal(amount.toString(), 'balance is correct')
+        })
     } )
+
+    describe('withdrawing Ether', async () => {
+        let result
+        let amount
+
+        beforeEach(async () => {
+            // Deposit Ether first (test example only to get Ether into user1 accnt)
+            amount = ether(1)
+            await exchange.depositEther({ from: user1, value: amount })
+        })
+
+        describe('success', async () => {
+            beforeEach(async () => {
+            // Withdraw Ether
+            result = await exchange.withdrawEther(amount, { from: user1 })
+            })
+            it('withdraws ether funds', async () => {
+                const balance = await exchange.tokens(ETHER_ADDRESS, user1)
+                balance.toString().should.equal('0')
+            })
+            it('emits a Witdraw event', async () => {
+                const log = result.logs[0]
+                log.event.should.equal('Withdraw')
+                const event = log.args
+                event.token.toString().should.equal(ETHER_ADDRESS, 'token address is correct')
+                event.user.should.equal(user1, 'user address is correct')
+                event.amount.toString().should.equal(amount.toString(), 'amount is correct')
+                event.balance.toString().should.equal('0')
+            })
+        })
+         describe('failure', async () => {
+
+         })       
+    })
 
     describe('depositing tokens', () => {
         let result
@@ -89,5 +144,33 @@ contract('Exchange', ([deployer, feeAccount, user1]) => {
             await exchange.depositToken(token.address, amount, { from: user1 }).should.be.rejectedWith(EVM_REVERT)
         })
       })
+    })
+
+    describe('withdraw tokens', async () => {
+        let result
+        let amount
+
+        describe('success', async () => {
+            
+            beforeEach(async () => {
+                // Deposit tokens first
+                amount = tokens(10)
+                // Approve to token deposit
+                await token.approve(exchange.address, amount, { from: user1 })
+                // Deposit tokens
+                await exchange.depositToken(token.address, amount, { from: user1 })
+                // Withdraw Tokens
+                result = await exchange.withdrawToken(token.address, amount, { from: user1 })
+            })
+
+            it('withdraws token funds', async () => {
+                const balance = await exchange.tokens(token.address, user1)
+                balance.toString().should.equal('0')
+            })
+        })
+
+        describe('failure', async () => {
+            
+        })
     })
 })
