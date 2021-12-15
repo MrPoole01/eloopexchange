@@ -191,7 +191,10 @@ contract('Exchange', ([deployer, feeAccount, user1]) => {
     })
 
     describe('checking balances', async () => {
+        let amount
+
         beforeEach(async () => {
+            amount = ether(1)
             exchange.depositEther({ from: user1, value: amount})
         })
         it('returns user balances', async () => {
