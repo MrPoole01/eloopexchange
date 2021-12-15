@@ -85,7 +85,7 @@ contract('Exchange', ([deployer, feeAccount, user1]) => {
                 const balance = await exchange.tokens(ETHER_ADDRESS, user1)
                 balance.toString().should.equal('0')
             })
-            it('emits a Witdraw event', async () => {
+            it('emits a Withdraw event', async () => {
                 const log = result.logs[0]
                 log.event.should.equal('Withdraw')
                 const event = log.args
@@ -167,10 +167,36 @@ contract('Exchange', ([deployer, feeAccount, user1]) => {
                 const balance = await exchange.tokens(token.address, user1)
                 balance.toString().should.equal('0')
             })
+
+            it('emits a Withdraw event', async () => {
+                const log = result.logs[0]
+                log.event.should.equal('Withdraw')
+                const event = log.args
+                event.token.toString().should.equal(token.address, 'token address is correct')
+                event.user.should.equal(user1, 'user address is correct')
+                event.amount.toString().should.equal(amount.toString(), 'amount is correct')
+                event.balance.toString().should.equal('0')
+            })
         })
 
         describe('failure', async () => {
-            
+            it('rejects for insufficient balance', async () => {
+                await exchange.withdrawToken(ETHER_ADDRESS, amount, { from: user1 }).should.be.rejectedWith(EVM_REVERT)
+            })
+            it('fails for insufficient balance', async () => {
+                // Attempt to withdraw tokens without depositing any first
+                await exchange.withdrawToken(token.address, amount, { from: user1 }).should.be.rejectedWith(EVM_REVERT)
+            })
+        })
+    })
+
+    describe('checking balances', async () => {
+        beforeEach(async () => {
+            exchange.depositEther({ from: user1, value: amount})
+        })
+        it('returns user balances', async () => {
+            const result = await exchange.balanceOf(ETHER_ADDRESS, user1)
+            result.toString().should.equal(amount.toString())
         })
     })
 })
