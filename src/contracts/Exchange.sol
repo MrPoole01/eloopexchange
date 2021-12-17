@@ -10,10 +10,56 @@ contract Exchange {
     uint256 public feePercent; // fee percentage
     address constant ETHER = address(0); // Store Ether in tokens mapping with blank address
     mapping(address => mapping(address => uint256)) public tokens;
+    mapping(uint256 => _Order) public orders; // Store the order - mapping through all orders
+    uint256 public orderCount; // ID Count
+    mapping(uint256 => bool) public orderCancelled; // Canceled order storage
+    mapping(uint256 => bool) public orderFilled; // Filled order
 
     // Events
     event Deposit(address token, address user, uint256 amount, uint256 balance);
-    event Withdraw(address token, address user, uint amount, uint balance);
+    event Withdraw(address token, address user, uint256 amount, uint256 balance);
+    // Model the Order
+    event Order(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        uint256 timestamp
+    );
+    event Cancel(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        uint256 timestamp
+    );
+    // Trade Event
+    event Trade(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        address userFill,
+        uint256 timestamp
+    );
+
+    //  Struct
+    struct _Order {
+        // Order Atributes
+        uint256 id;
+        address user;
+        address tokenGet;
+        uint256 amountGet;
+        address tokenGive;
+        uint256 amountGive;
+        uint256 timestamp;
+    }
 
     // Set the Fees
     constructor (address _feeAccount, uint256 _feePercent) public {
@@ -26,6 +72,7 @@ contract Exchange {
         revert();
     }
 
+    // Deposit & Withdraw Orders
     // Deposit Ether
     function depositEther() payable public {
         // Manage Ether deposit - update balance
@@ -59,7 +106,7 @@ contract Exchange {
         emit Deposit(_token, msg.sender, _amount, tokens[_token][msg.sender]);
     }
 
-    // [ ] Withdraw Tokens
+    // Withdraw Tokens
     function withdrawToken(address _token, uint256 _amount) public {
         require(_token != ETHER);
         require(tokens[_token][msg.sender] >= _amount);
@@ -68,19 +115,66 @@ contract Exchange {
         emit Withdraw(_token, msg.sender, _amount, tokens[_token][msg.sender]);
     }
 
+    // Check Balances
     function balanceOf(address _token, address _user) public view returns (uint256) {
          return tokens[_token][_user];
     }
 
-// [ ] Check Balances
-// [ ] Make Order
-// [ ] Cancel Order
-// [ ] Fill Order
-// [ ] Charge Fees
+    // Manage Orders - Make or Cancel
+     // Add Order to Storage
+     function makeOrder(address _tokenGet, uint256 _amountGet,  address _tokenGive, uint256 _amountGive) public {
+         // Extantiate a new order
+         orderCount = orderCount.add(1);
+        // Make Order
+         orders[orderCount] = _Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, now);
+        // Retrieve the Order
+         emit Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, now);
+     }
 
-// Deposit & Withdraw Orders
-// Manage Orders - Make oor Cancel
-// Handle Trades - Charge Fees
+     // Cancel Order
+    function cancelOrder(uint256 _id) public {
+        // Fetch the Order from Storage
+        _Order storage _order = orders[_id];
+        // Must be my order - smae user
+        require(address(_order.user) == msg.sender);
+        // Must be a VALID Order
+        require(_order.id == _id);
+        // If all is good... Cancel the Order
+        orderCancelled[_id] = true;
+        emit Cancel(_order.id, msg.sender, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive, now);
+    }
 
+    // Handle Trades - Charge Fee
+    // Fill Order
+    function fillOrder(uint256 _id) public {
+        // Filling a valid order
+        require(_id > 0 && _id <= orderCount);
+        // Check to see if order already exists
+        require(!orderFilled[_id]);
+        require(!orderCancelled[_id]);
+        // Fetch the Orders
+        _Order storage _order = orders[_id];
+        // Execute trade function
+       _trade(_order.id, _order.user, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive);
+        // Mark order as filled
+        orderFilled[_order.id] = true;
+    }
 
+    function _trade(uint256 _orderId, address _user, address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) internal {
+        //Fee paid by the user that fills the order, o.k.a msg.sender
+        uint256 _feeAmount = _amountGet.mul(feePercent).div(100);
+
+         // Execute the trades 
+        tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender].sub(_amountGet.add(_feeAmount)); // Fee deducted  from _amountGet
+        tokens[_tokenGet][_user] = tokens[_tokenGet][_user].add(_amountGet);
+       
+        // Adding fees -  Charge fees
+        tokens[_tokenGet][feeAccount] = tokens[_tokenGet][feeAccount].add(_feeAmount);
+
+        tokens[_tokenGive][_user] = tokens[_tokenGive][_user].sub(_amountGive);
+        tokens[_tokenGive][msg.sender] = tokens[_tokenGive][msg.sender].add(_amountGive);
+       
+        // Emit trade Event
+        emit Trade(_orderId, _user, _tokenGet, _amountGet, _tokenGive, _amountGive, msg.sender, now);
+    }
 }
