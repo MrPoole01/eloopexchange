@@ -68,7 +68,7 @@ contract Exchange {
     }
 
     // Fallback: Revert if Ether is sent to this smart contract by mistake 
-    function() external {
+    function () external {
         revert();
     }
 
@@ -122,7 +122,7 @@ contract Exchange {
 
     // Manage Orders - Make or Cancel
      // Add Order to Storage
-     function makeOrder(address _tokenGet, uint256 _amountGet,  address _tokenGive, uint256 _amountGive) public {
+     function makeOrder(address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) public {
          // Extantiate a new order
          orderCount = orderCount.add(1);
         // Make Order
@@ -135,7 +135,7 @@ contract Exchange {
     function cancelOrder(uint256 _id) public {
         // Fetch the Order from Storage
         _Order storage _order = orders[_id];
-        // Must be my order - smae user
+        // Must be my order - same user
         require(address(_order.user) == msg.sender);
         // Must be a VALID Order
         require(_order.id == _id);
