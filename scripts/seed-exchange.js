@@ -36,7 +36,7 @@ module.exports = async function(callback) {
         // Give tokens to account[1]
         let sender = accounts[0]
         let receiver = accounts[1]
-        let amount = web3.utils.toWei('1000', 'ether') // 10,000 Tokens
+        let amount = web3.utils.toWei('10000', 'ether') // 10,000 Tokens
         
         await token.transfer(receiver, amount, { from: sender })
         console.log(`Transfer ${amount} from ${sender} to ${receiver}`)
@@ -58,7 +58,6 @@ module.exports = async function(callback) {
         console.log(`Approved ${amount} tokens from ${user2}`)
 
         // User2 Deposits Tokens
-        amount = 1
         await exchange.depositToken(token.address, tokens(amount), { from: user2 })
         console.log(`Deposited ${amount} tokens from ${user2}`)
 
@@ -84,8 +83,6 @@ module.exports = async function(callback) {
         // User1 Makes Order
         result = await exchange.makeOrder(token.address, tokens(100), ETHER_ADDRESS, ether(0.1), { from: user1 })
         console.log(`Made order from ${user1}`)
-
-        console.log(result.logs[0])
         
         // User2 Fills Order
         orderId = result.logs[0].args.id
