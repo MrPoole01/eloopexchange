@@ -25,7 +25,7 @@ export const loadToken = async (web3, networkId, dispatch) => {
         dispatch(tokenLoaded(token))
         return token
     }   catch (error) {
-        window.alert("Token contract not deployed to the current network.  Please  select another network with  Metamask.")
+        console.log("Token contract not deployed to the current network.  Please  select another network with  Metamask.")
         return null
     }
 }
@@ -35,7 +35,7 @@ export const loadExchange = async (web3, networkId, dispatch) => {
         dispatch(exchangeLoaded(exchange))
         return exchange
     }   catch (error) {
-        window.alert("Exchange contract not deployed to the current network.  Please  select another network with  Metamask.")
+        console.log("Exchange contract not deployed to the current network.  Please  select another network with  Metamask.")
         return null
     }
 }
