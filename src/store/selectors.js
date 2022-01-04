@@ -2,6 +2,7 @@ import { get } from 'lodash'
 import { createSelector } from "reselect"
 
 const account = state => get(state, 'web3.account')
+// const account = state => get(state, "web3.connection.currentProvider.selectedAddress")
 export const accountSelector = createSelector(account, acct => acct)
 
 const tokenLoaded = state => get(state, 'token.loaded', false)

@@ -1,6 +1,5 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { ContractsLoadedSelector } from  "../store/selectors"
 
 class Content extends Component {
   render() {
