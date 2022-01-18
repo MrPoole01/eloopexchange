@@ -20,13 +20,13 @@ const showOrderBook = (props) => {
     const { orderBook } = props
     return(
         <tbody>
-            {orderBook.sellOrders.map((order) => renderOrder(order))}
+            {orderBook.buyOrders.map((order) => renderOrder(order))}
             <tr>
                 <th>DAPP</th>
                 <th>DAPP/ETH</th>
                 <th>ETH</th>
             </tr>
-            {orderBook.buyOrders.map((order) => renderOrder(order))}
+            {orderBook.sellOrders.map((order) => renderOrder(order))}
         </tbody>
     )
 }
