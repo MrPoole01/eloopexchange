@@ -71,6 +71,7 @@ class OrderBook extends Component {
 function mapStateToProps(state) {
   const orderBookLoaded = orderBookLoadedSelector(state)
   const orderFilling = orderFillingSelector(state)
+  
   return {
     orderBook: orderBookSelector(state),
     showOrderBook: orderBookLoaded && !orderFilling,
@@ -79,4 +80,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(OrderBook);
+export default connect(mapStateToProps)(OrderBook)
