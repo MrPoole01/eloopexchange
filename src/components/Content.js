@@ -4,12 +4,12 @@ import { exchangeSelector } from "../store/selectors";
 import { loadAllOrders, subscribeToEvents } from "../store/interations"
 import  OrderBook from "./OrderBook"
 import PriceChart from "./PriceChart"
-import ExTransactions from "./ExTransactions"
+import Transactions from "./ExTransactions"
 import Trades from "./Trades"
 import Balance from "./Balance"
 
 class Content extends Component {
-  componentWillUnmount() {
+  componentWillMount() {
     this.loadBlockchainData(this.props);
   }
 
@@ -40,7 +40,7 @@ class Content extends Component {
           <OrderBook type="table" />
         <div className="vertical-split">
           <PriceChart />
-          <ExTransactions type="table" />
+          <Transactions type="table" />
         </div>
           <Trades />
       </div>

@@ -12,30 +12,31 @@ import  {
 import { contractsLoadedSelector } from "../store/selectors"
 
 class App extends Component {
-  componentWillUnmount() {
+  componentWillMount() {
     this.loadBlockchainData(this.props.dispatch);
   }
 
   async loadBlockchainData(dispatch) {
-    const web3 = loadWeb3(dispatch)
-    await web3.eth.net.getNetworkType()
-    const networkId = await web3.eth.net.getId()
-    await loadAccount(web3, dispatch)
+    const web3 = loadWeb3(dispatch);
+    await web3.eth.net.getNetworkType();
+    const networkId = await web3.eth.net.getId();
+    await loadAccount(web3, dispatch);
     console.log(loadAccount(web3, dispatch));
-    const token = await loadToken(web3, networkId, dispatch)
+    const token = await loadToken(web3, networkId, dispatch);
+
     if (!token) {
       window.alert(
         "Token contract not deployed to the current network.  Please  select another network with  Metamask."
-      )
-      return
+      );
+      return;
     }
 
-    const exchange = await loadExchange(web3, networkId, dispatch)
+    const exchange = await loadExchange(web3, networkId, dispatch);
     if (!exchange) {
       window.alert(
         "Token contract not deployed to the current network.  Please  select another network with  Metamask."
-        )
-        return
+      );
+      return;
     }
   }
 
@@ -43,11 +44,15 @@ class App extends Component {
     return (
       <div>
         <Navbar />
-          { this.props.contractsLoaded ?  <Content />  :  <div className="content"></div> }
-        </div>
-      )
-    }
+        {this.props.contractsLoaded ? (
+          <Content />
+        ) : (
+          <div className="content"></div>
+        )}
+      </div>
+    );
   }
+}
 
 function mapStateToProps(state) {
   return {

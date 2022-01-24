@@ -20,16 +20,16 @@ function token(state = {}, action) {
     case 'TOKEN_BALANCE_LOADED':
       return { ...state, balance: action.balance }
     default:
-      return state;
+      return state
   }
 }
 
 function exchange(state = {}, action) {
-  let index,data
+  let index, data
 
   switch (action.type) {
     case "EXCHANGE_LOADED":
-      return { ...state, loaded: true, contract: action.contract };
+      return { ...state, loaded: true, contract: action.contract }
     case "CANCELLED_ORDERS_LOADED":
       return {
         ...state,
@@ -41,7 +41,7 @@ function exchange(state = {}, action) {
         filledOrders: { loaded: true, data: action.filledOrders },
       };
     case "ALL_ORDERS_LOADED":
-      return { ...state, allOrders: { loaded: true, data: action.allOrders } };
+      return { ...state, allOrders: { loaded: true, data: action.allOrders } }
     case "ORDER_CANCELLING":
       return { ...state, orderCancelled: true };
     case "ORDER_CANCELLED":
@@ -52,7 +52,7 @@ function exchange(state = {}, action) {
           ...state.cancelledOrders,
           data: [...state.cancelledOrders.data, action.order],
         },
-      };
+      }
 
     case "ORDER_FILLED":
       // Prevent  duplicate orders
@@ -61,7 +61,7 @@ function exchange(state = {}, action) {
       );
 
       if (index === -1) {
-        data = [...state.filledOrders.data, action.order];
+        data = [...state.filledOrders.data, action.order]
       } else {
         data = state.filledOrders.data;
       }
@@ -69,25 +69,31 @@ function exchange(state = {}, action) {
         ...state,
         orderfilling: false,
         filledOrders: { ...state.filledOrders, data },
-      };
+      }
 
     case "ORDER_FILLING":
-      return { ...state, orderfilling: true };
+      return { ...state, orderfilling: true }
 
     case "EXCHANGE_ETHER_BALANCE_LOADED":
-      return { ...state, etherBalance: action.balance };
+      return { ...state, etherBalance: action.balance }
     case "EXCHANGE_TOKEN_BALANCE_LOADED":
-      return { ...state, tokenBalance: action.balance };
+      return { ...state, tokenBalance: action.balance }
     case "BALANCES_LOADING":
-      return { ...state, balancesLoading: true };
+      return { ...state, balancesLoading: true }
     case "BALANCES_LOADED":
-      return { ...state, balancesLoading: false };
+      return { ...state, balancesLoading: false }
 
     case "ETHER_DEPOSIT_AMOUNT_CHANGED":
-      return { ...state, etherDepositAmount: action.amount}
+      return { ...state, etherDepositAmount: action.amount }
+    case "ETHER_WITHDRAW_AMOUNT_CHANGED":
+      return { ...state, etherWithdrawAmount: action.amount }
+    case "TOKEN_DEPOSIT_AMOUNT_CHANGED":
+      return { ...state, tokenDepositAmount: action.amount }
+    case "TOKEN_WITHDRAW_AMOUNT_CHANGED":
+      return { ...state, tokenWithdrawAmount: action.amount }
 
     default:
-      return state;
+      return state
   }
 }
 

@@ -8,7 +8,7 @@ import {
   accountSelector,
   orderFillingSelector
 } from "../store/selectors";
-import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import { fillOrder } from "../store/interations"
 
 const renderOrder = (order, props) => {
@@ -48,7 +48,7 @@ const showOrderBook = (props) => {
         </tr>
         {orderBook.buyOrders.map((order) => renderOrder(order, props))}
       </tbody>
-    );
+    )
 }
 
 class OrderBook extends Component {
