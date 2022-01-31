@@ -157,3 +157,7 @@ tr.order-book-order {
   justify-content: right;
 }
 
+.new-order-label {
+  padding: 10px 0;
+}
+

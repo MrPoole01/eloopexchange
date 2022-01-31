@@ -9,7 +9,7 @@ import {
   orderFillingSelector
 } from "../store/selectors";
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
-import { fillOrder } from "../store/interations"
+import { fillOrder } from "../store/interactions"
 
 const renderOrder = (order, props) => {
     const { dispatch, exchange, account } = props;

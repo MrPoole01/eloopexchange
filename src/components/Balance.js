@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Tabs, Tab } from "react-bootstrap";
-import Spinner from "./spinner";
+import React, { Component } from "react"
+import { connect } from "react-redux"
+import { Tabs, Tab } from "react-bootstrap"
+import Spinner from "./spinner"
 import {
     web3Selector,
     exchangeSelector,
@@ -24,7 +24,7 @@ import {
   withdrawEther,
   depositToken,
   withdrawToken,
-} from "../store/interations"
+} from "../store/interactions"
 
 import {
   etherDepositAmountChanged,

@@ -11,7 +11,7 @@ import {
     accountSelector,
     orderCancellingSelector
 } from "../store/selectors"
-import { cancelOrder } from "../store/interations"
+import { cancelOrder } from "../store/interactions"
 
 const showMyFilledOrders = (props) => {
     const { myFilledOrders } = props

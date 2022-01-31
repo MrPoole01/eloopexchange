@@ -370,7 +370,7 @@ const  etherWithdrawAmount = state => get(state, 'exchange.etherWithdrawAmount',
 export const etherWithdrawAmountSelector = createSelector(etherWithdrawAmount, amount => amount)  
 
 const tokenDepositAmount = (state) =>
-  get(state, "exchange.tokenDepositAmount", null);
+  get(state, "exchange.tokenDepositAmount", null)
 export const tokenDepositAmountSelector = createSelector(
   tokenDepositAmount,
   (amount) => amount
@@ -381,3 +381,9 @@ const tokenWithdrawAmount = (state) =>
 export const tokenWithdrawAmountSelector = createSelector(
   tokenWithdrawAmount,
   (amount) => amount)
+
+  const buyOrder = (state) => get(state, "exchange.buyOrder", {})
+  export const buyOrderSelector = createSelector(buyOrder, (order) => order)
+
+  const sellOrder = (state) => get(state, "exchange.sellOrder", {})
+  export const sellOrderSelector = createSelector(sellOrder, (order) => order)

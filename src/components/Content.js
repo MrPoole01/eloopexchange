@@ -1,12 +1,13 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { exchangeSelector } from "../store/selectors";
-import { loadAllOrders, subscribeToEvents } from "../store/interations"
+import { loadAllOrders, subscribeToEvents } from "../store/interactions"
 import  OrderBook from "./OrderBook"
 import PriceChart from "./PriceChart"
 import Transactions from "./ExTransactions"
 import Trades from "./Trades"
 import Balance from "./Balance"
+import NewOrder from "./NewOrder"
 
 class Content extends Component {
   componentWillMount() {
@@ -24,18 +25,7 @@ class Content extends Component {
       <div className="content">
         <div className="vertical-split">
           <Balance />
-          <div className="card bg-dark text-white">
-            <div className="card-header">Card Title</div>
-            <div className="card-body">
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </p>
-              <a href="/#" className="card-link">
-                Card link
-              </a>
-            </div>
-          </div>
+         <NewOrder />
         </div>
           <OrderBook type="table" />
         <div className="vertical-split">
