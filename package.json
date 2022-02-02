@@ -37,8 +37,13 @@
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build"
   },
+  "engines": {
+        "npm": "8.2.0",
+        "node": "12.20.1"
+      },
   "eslintConfig": {
     "extends": [
       "react-app",
